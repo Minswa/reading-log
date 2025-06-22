@@ -1,3 +1,110 @@
-baseURL = 'https://example.org/'
-languageCode = 'en-us'
-title = 'My New Hugo Site'
+# hugo.toml
+
+baseURL = "https://YOUR-GITHUB-USERNAME.github.io/" # 1. GitHub Pages 주소로 변경 예정
+languageCode = "ko-kr"
+title = "Reading-log"
+theme = "PaperMod"
+ 
+[pagination]
+  pagerSize = 5 # 한 페이지에 보일 글 개수
+
+enableRobotsTXT = true
+buildDrafts = false
+buildFuture = false
+buildExpired = false
+
+[minify]
+  disableXML = true
+  minifyOutput = true
+
+[params]
+  env = "production" # or "development"
+  title = "Reading-log"
+  description = "저의 개인적인 독서 기록을 남기는 공간입니다."
+  keywords = ["독서록", "책리뷰", "서평", "Blog"]
+  author = "Your Name" # 2. 본인 이름으로 변경
+  # author: ["Me", "You"] # multiple authors
+  images = ["<link or path of image for opengraph, twitter-cards>"]
+  DateFormat = "2006-01-02"
+  defaultTheme = "auto" # "auto", "dark", "light"
+  disableThemeToggle = false
+
+  ShowReadingTime = true
+  ShowShareButtons = true
+  ShowPostNavLinks = true
+  ShowBreadCrumbs = true
+  ShowCodeCopyButtons = true
+  ShowWordCount = true
+  ShowRssButtonInSectionTerm = true
+  UseHugoToc = true
+  disableSpecial1stPost = false
+  disableScrollToTop = false
+  comments = false # 댓글 기능 비활성화 (필요시 true로 변경)
+  hidemeta = false
+  hideSummary = false
+  showtoc = false
+  tocopen = false
+
+  [params.assets]
+    # disableHLJS = true # to disable highlight.js
+    # disableFingerprinting = true
+    favicon = "<link / abs url>"
+    favicon16x16 = "<link / abs url>"
+    favicon32x32 = "<link / abs url>"
+    apple_touch_icon = "<link / abs url>"
+    safari_pinned_tab = "<link / abs url>"
+
+  [params.label]
+    text = "Home"
+    # icon = "/apple-touch-icon.png"
+    # iconHeight = 35
+
+  # profile-mode
+  [params.profileMode]
+    enabled = false # 기획서의 메인 페이지 구성을 위해 비활성화
+    title = "Reading-log"
+    subtitle = "책과 함께하는 여정"
+    imageUrl = "" # 프로필 이미지 경로
+    imageWidth = 120
+    imageHeight = 120
+    buttons = [
+        { name = "Posts", url = "/posts" },
+        { name = "About", url = "/about" }
+    ]
+
+  # home-info mode (기획서의 메인 페이지 구성에 적합)
+  [params.homeInfoParams]
+    Title = "📚 환영합니다! Reading-log 입니다"
+    Content = "이곳은 저의 독서 여정을 기록하고 공유하는 공간입니다. 다양한 책에 대한 생각과 감상을 나누고 싶습니다."
+
+  [[params.socialIcons]]
+    name = "github"
+    url = "https://github.com/YOUR-GITHUB-USERNAME" # 3. 본인 GitHub 주소로 변경
+
+  # 검색, 카테고리, 태그, 아카이브 메뉴 설정
+  [menu]
+    [[menu.main]]
+      identifier = "search"
+      name = "검색"
+      url = "/search/"
+      weight = 10
+    [[menu.main]]
+      identifier = "categories"
+      name = "카테고리"
+      url = "/categories/"
+      weight = 20
+    [[menu.main]]
+      identifier = "tags"
+      name = "태그"
+      url = "/tags/"
+      weight = 30
+    [[menu.main]]
+      identifier = "archives"
+      name = "연도별 기록"
+      url = "/archives/"
+      weight = 40
+    [[menu.main]]
+      identifier = "stats"
+      name = "독서 통계"
+      url = "/stats/"
+      weight = 50
