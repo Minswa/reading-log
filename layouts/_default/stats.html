@@ -1,0 +1,99 @@
+{{ define "main" }}
+<div class="post-content">
+    <h1>{{ .Title }}</h1>
+    <p>{{ .Content }}</p>
+
+    {{/* 모든 독서록('posts') 데이터를 변수에 저장 */}}
+    {{ $pages := where site.RegularPages "Section" "posts" }}
+    {{ $totalBooks := len $pages }}
+
+    <h2>종합 통계</h2>
+    <ul>
+        <li><strong>총 읽은 책:</strong> {{ $totalBooks }}권</li>
+    </ul>
+
+    <hr>
+
+    <h2>연도별 독서량</h2>
+    <canvas id="yearlyChart" width="400" height="200"></canvas>
+
+    <hr>
+
+    <h2>평점 분포</h2>
+    <canvas id="ratingChart" width="400" height="200"></canvas>
+
+    {{/* --- 데이터 처리 로직 (Hugo Template) --- */}}
+    {{ $yearlyData := dict }}
+    {{ $ratingData := dict "1" 0 "2" 0 "3" 0 "4" 0 "5" 0 }}
+
+    {{ range $pages }}
+        {{ if .Params.read_date }}
+            {{ $year := (time .Params.read_date).Format "2006" }}
+            {{ $current_count := index $yearlyData $year | default 0 }}
+            {{ $yearlyData = merge $yearlyData (dict $year (add $current_count 1)) }}
+        {{ end }}
+        {{ if .Params.rating }}
+            {{ $rating := string .Params.rating }}
+            {{ $current_count := index $ratingData $rating | default 0 }}
+            {{ $ratingData = merge $ratingData (dict $rating (add $current_count 1)) }}
+        {{ end }}
+    {{ end }}
+
+    {{/* Chart.js 라이브러리 로드 */}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // 연도별 독서량 차트
+        const yearlyCtx = document.getElementById('yearlyChart').getContext('2d');
+        const yearlyChart = new Chart(yearlyCtx, {
+            type: 'bar',
+            data: {
+                labels: [{{ range $year, $count := $yearlyData }}"{{ $year }}",{{ end }}],
+                datasets: [{
+                    label: '연도별 독서량 (권)',
+                    data: [{{ range $year, $count := $yearlyData }}{{ $count }},{{ end }}],
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                          stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+
+        // 평점 분포 차트
+        const ratingCtx = document.getElementById('ratingChart').getContext('2d');
+        const ratingChart = new Chart(ratingCtx, {
+            type: 'pie',
+            data: {
+                labels: ['1점', '2점', '3점', '4점', '5점'],
+                datasets: [{
+                    label: '평점 분포',
+                    data: [
+                        {{ index $ratingData "1" | default 0 }},
+                        {{ index $ratingData "2" | default 0 }},
+                        {{ index $ratingData "3" | default 0 }},
+                        {{ index $ratingData "4" | default 0 }},
+                        {{ index $ratingData "5" | default 0 }}
+                    ],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(255, 159, 64, 0.6)',
+                        'rgba(255, 205, 86, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(54, 162, 235, 0.6)'
+                    ],
+                }]
+            }
+        });
+    </script>
+</div>
+{{ end }}
